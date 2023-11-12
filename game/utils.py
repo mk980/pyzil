@@ -1,4 +1,5 @@
 import json
+import requests
 from game.models import Game, Question, AnswersSet
 
 
