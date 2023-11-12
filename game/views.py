@@ -4,7 +4,7 @@ from game.utils import fetch_questions
 
 
 def index(request):
-	return redirect("game")
+	return render(request, 'game/index.html')
 
 
 def game(request):
