@@ -1,0 +1,22 @@
+
+
+
+/* Background settings */
+body {
+    background-image: url(../images/gameBackground.jpeg);
+    background-size: cover;
+    text-align: center;
+
+    /* background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center; */
+}
+
+h1 {
+    font-family: "Arial Black", sans-serif;
+    font-weight: bold;
+    color: ghostwhite;
+}
+#nextButton {
+    display: none;
+}

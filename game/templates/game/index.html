@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <title>Main screen</title>
 </head>
+{% load static %}
+<link rel="stylesheet" href="{% static 'game/css/styles.css' %}">
+
 <body>
 <h1>
-    Welcome to the Game!
+    Who Wants To Be a Pyzillionaire?
 </h1>
 
 <form method="POST">
     {% csrf_token %}
-    <input type="hidden" value="start_game">
-    <button type="submit">Start the game!</button>
+    <input type="hidden" value="game">
+    <button type="submit"><h2>Start the game!</h2></button>
 </form>
+
 </body>
 </html>

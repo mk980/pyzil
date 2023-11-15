@@ -4,9 +4,26 @@
     <meta charset="UTF-8">
     <title>Game screen</title>
 </head>
+{% load static %}
+<link rel="stylesheet" href="{% static 'game/css/styles.css' %}">
+<script src='../../static/game/js/scripts.js'></script>
+
 <body>
 <form method="POST">
-<h1>Question number {}</h1>
+<h1>Here will be the question drawn from the database asking something?</h1>
 </form>
+<br>
+<button id="answerButton"><h3>Answer option 1<h3/></button>
+<button id="answerButton"><h3>Answer option 2<h3/></button>
+<br>
+<button id="answerButton"><h3>Answer option 3<h3/></button>
+<button id="answerButton"><h3>Answer option 4<h3/></button>
+<br>
+<br>
+<div>
+<button id="nextButton">
+    <h2>Next</h2>
+</button>
+</div>
 </body>
 </html>

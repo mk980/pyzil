@@ -9,8 +9,8 @@ def index(request):
 
 def game(request):
 	difficulty_levels = ["easy", "medium", "hard"]
-	questions = fetch_questions(difficulty_levels)
+	# questions = fetch_questions(difficulty_levels)
 	context = {
-		"questions": questions
+		# "questions": questions
 	}
 	return render(request, 'game/game_screen.html')
