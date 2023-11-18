@@ -19,33 +19,27 @@ def game_view(request):
 
 		if results:
 			for result in results:
-				print(f"Processing result: {result}")
+				incorrect_answers = result.get("incorrect_answers")
+				# AnswerSet instance for Associated TriviaQuestion
+
+				answers_set = AnswersSet(
+					correct_answer=result.get("correct_answer"),
+					incorrect_answer1=incorrect_answers[0],
+					incorrect_answer2=incorrect_answers[1],
+					incorrect_answer3=incorrect_answers[2]
+				)
+				answers_set.save()
 				# TriviaQuestion instance
 				question = TriviaQuestion(
 					category=result.get("category"),
 					difficulty=result.get("difficulty"),
 					question=result.get("question"),
-					type=result.get("type")
+					type=result.get("type"),
+					answer_set=answers_set
+
 				)
 				question.save()
-				# AnswerSet instance for Associated TriviaQuestion
-				answer = AnswersSet(
-					correct_answer=result.get("correct_answer"),
-					incorrect_answer1=result.get("incorrect_answers")[0],
-					incorrect_answer2=result.get("incorrect_answers")[1],
-					incorrect_answer3=result.get("incorrect_answers")[2]
-				)
-				answer.save()
 
-	# question = Question.objects.all()
 	question = TriviaQuestion.objects.all()
 	return render(request, 'game/game_screen.html', {'question': question})
-	# return render(request, 'game/game_screen.html', {'get_question': get_question})
-
-# def game(request):
-# 	difficulty_levels = ["easy", "medium", "hard"]
-# 	# questions = fetch_questions(difficulty_levels)
-# 	context = {
-# 		# "questions": questions
-# 	}
-# 	return render(request, 'game/game_screen.html')
+# return render(request, 'game/game_screen.html', {'get_question': get_question})

@@ -1,23 +1,13 @@
 from django.db import models
 
 
-# Create your models here.
-
 class Player(models.Model):
 	game = models.ForeignKey('Game', on_delete=models.PROTECT)
 
 
 class Game(models.Model):
-	question = models.ForeignKey('Question', on_delete=models.PROTECT)
+	trivia_question = models.ForeignKey('TriviaQuestion', on_delete=models.PROTECT)
 	score = models.IntegerField(null=True, blank=True, default=0)
-
-
-class Question(models.Model):
-	answer_set = models.OneToOneField(
-		'AnswersSet',
-		on_delete=models.CASCADE,
-		primary_key=True,
-	)
 
 
 class TriviaQuestion(models.Model):
@@ -38,11 +28,4 @@ class AnswersSet(models.Model):
 	incorrect_answer3 = models.CharField(max_length=128, null=False, blank=False)
 
 
-class CategoryList(models.Model):
-	category_id = models.CharField(max_length=5)
-	name = models.CharField(max_length=50)
-	trivia_question = models.ForeignKey(
-		'TriviaQuestion',
-		blank=False,
-		on_delete=models.CASCADE,
-	)
+
