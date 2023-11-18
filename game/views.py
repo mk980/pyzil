@@ -1,5 +1,4 @@
 from django.shortcuts import redirect, render
-
 from .utils import fetch_question
 
 from .models import AnswersSet, TriviaQuestion
@@ -10,8 +9,16 @@ def index(request):
 
 
 def game_view(request):
-	# get_question = TriviaQuestion.objects.all()
-	# get_answer = AnswersSet.objects.all()
+	if request.method == 'POST':
+		# Handle answer submission
+		selected_answer = request.POST.get('answer')
+		correct_answer = TriviaQuestion.objects.get(pk=request.POST.get('question_id')).answer_set.correct_answer
+
+		# Determine if the selected answer is correct and handle accordingly
+		is_correct = selected_answer == correct_answer
+		context = {'is_correct': is_correct}
+		return render(request, 'game/game_screen.html', context)
+
 	response = fetch_question()
 	if response.status_code == 200:
 		data = response.json()
@@ -40,6 +47,6 @@ def game_view(request):
 				)
 				question.save()
 
-	question = TriviaQuestion.objects.all()
+	question = TriviaQuestion.objects.order_by('?').first()
 	return render(request, 'game/game_screen.html', {'question': question})
 # return render(request, 'game/game_screen.html', {'get_question': get_question})

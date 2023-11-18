@@ -7,26 +7,60 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'game/css/styles.css' %}">
 <script src='../../static/game/js/scripts.js'></script>
+ <style>
+        /* Add your styles for correct and incorrect answers here */
+        .correct { color: green; }
+        .incorrect { color: red; }
+    </style>
 
 
 <body>
 
-    {% for question in questions %}
-      <h2>{{ question.question }}</h2>
+    <form id="answerForm" method="post" action="{% url 'game_view' %}">
+        {% csrf_token %}
+        <input type="hidden" name="question_id" value="{{ question.id }}">
 
-      <ul>
-        <li>Correct Answer: {{ question.correct_answer }}</li>
-        {% for incorrect_answer in question.incorrect_answers %}
-          <li>Incorrect Answer: {{ incorrect_answer }}</li>
-        {% endfor %}
-      </ul>
-    {% endfor %}
+        <p>{{ question.question }}</p>
 
+        <label>
+            <input type="radio" name="answer" value="{{ question.answer_set.correct_answer }}">
+            {{ question.answer_set.correct_answer }}
+        </label>
 
-  <form method="post" action="{% url 'game_view' %}">
-    {% csrf_token %}
-    <button type="submit">Next Question</button>
-  </form>
+        <label>
+            <input type="radio" name="answer" value="{{ question.answer_set.incorrect_answer1 }}">
+            {{ question.answer_set.incorrect_answer1 }}
+        </label>
+
+        <label>
+            <input type="radio" name="answer" value="{{ question.answer_set.incorrect_answer2 }}">
+            {{ question.answer_set.incorrect_answer2 }}
+        </label>
+
+        <label>
+            <input type="radio" name="answer" value="{{ question.answer_set.incorrect_answer3 }}">
+            {{ question.answer_set.incorrect_answer3 }}
+        </label>
+
+        <button type="submit">Next Question</button>
+    </form>
+
+  <script>
+    function highlightAnswer(selectedOption) {
+      // Reset the color of all options
+      var options = document.querySelectorAll('input[type=radio]');
+      options.forEach(function(option) {
+        option.parentElement.style.backgroundColor = '';
+      });
+
+      // Highlight the selected option
+      if (selectedOption.value === "{{ question.answer_set.correct_answer }}") {
+        selectedOption.parentElement.style.backgroundColor = 'green';
+      } else {
+        selectedOption.parentElement.style.backgroundColor = 'red';
+      }
+    }
+  </script>
 
 <!--<form method="POST">-->
 <!--<h1></h1>-->
