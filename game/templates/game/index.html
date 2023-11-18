@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Main screen</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 {% load static %}
 <link rel="stylesheet" href="{% static 'game/css/styles.css' %}">
@@ -12,11 +13,66 @@
     Who Wants To Be a Pyzillionaire?
 </h1>
 
-<form method="POST">
+<form id="startGameForm" method="GET" action="{% url 'game_view' %}">
     {% csrf_token %}
-    <input type="hidden" value="game">
     <button type="submit"><h2>Start the game!</h2></button>
-</form>
+     <script>
+    $(document).ready(function () {
+        $('#category').change(updateCategoryId);
+        $('#difficulty').change(updateDifficulty);
 
+        function updateCategoryId() {
+            var selectedCategory = document.getElementById('category');
+            var selectedCategoryId = selectedCategory.options[selectedCategory.selectedIndex].value;
+            document.getElementById('category_id').value = selectedCategoryId;
+        }
+
+        function updateDifficulty() {
+            var selectedDifficulty = document.getElementById('difficulty');
+            var selectedDifficultyValue = selectedDifficulty.options[selectedDifficulty.selectedIndex].value;
+            document.getElementById('difficulty_value').value = selectedDifficultyValue;
+        }
+
+        $('#startGameForm').submit(function (event) {
+            event.preventDefault();  // Prevent default form submission
+
+            // Use AJAX to submit the form and handle the response
+            $.ajax({
+            type: 'GET',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            success: function (data) {
+                console.log('Success:', data);
+                // Add additional logic if needed
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to start the game');
+            },
+            complete: function () {
+                // Redirect after the request is complete
+                window.location.href = '/game_screen/';
+            }
+        });
+    });
+});
+</script>
+<!--<script>-->
+<!--$(document).ready(function() {-->
+<!--    $('#nextButton').click(function() {-->
+<!--        $(this).css('background-color', 'green');-->
+<!--    });-->
+<!--});-->
+<!--</script>-->
+</form>
 </body>
+
+
+<!--<form method="POST">-->
+<!--    {% csrf_token %}-->
+<!--    <input type="hidden" value="game">-->
+<!--    <button type="submit"><h2>Start the game!</h2></button>-->
+<!--</form>-->
+
+<!--</body>-->
 </html>

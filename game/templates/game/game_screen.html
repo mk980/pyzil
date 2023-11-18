@@ -8,22 +8,41 @@
 <link rel="stylesheet" href="{% static 'game/css/styles.css' %}">
 <script src='../../static/game/js/scripts.js'></script>
 
+
 <body>
-<form method="POST">
-<h1>Here will be the question drawn from the database asking something?</h1>
-</form>
-<br>
-<button id="answerButton"><h3>Answer option 1<h3/></button>
-<button id="answerButton"><h3>Answer option 2<h3/></button>
-<br>
-<button id="answerButton"><h3>Answer option 3<h3/></button>
-<button id="answerButton"><h3>Answer option 4<h3/></button>
-<br>
-<br>
-<div>
-<button id="nextButton">
-    <h2>Next</h2>
-</button>
-</div>
+
+    {% for question in questions %}
+      <h2>{{ question.question }}</h2>
+
+      <ul>
+        <li>Correct Answer: {{ question.correct_answer }}</li>
+        {% for incorrect_answer in question.incorrect_answers %}
+          <li>Incorrect Answer: {{ incorrect_answer }}</li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+
+
+  <form method="post" action="{% url 'next_question' %}">
+    {% csrf_token %}
+    <button type="submit">Next Question</button>
+  </form>
+
+<!--<form method="POST">-->
+<!--<h1></h1>-->
+<!--</form>-->
+<!--<br>-->
+<!--<button id="answerButton"><h3>Answer option 1<h3/></button>-->
+<!--<button id="answerButton"><h3>Answer option 2<h3/></button>-->
+<!--<br>-->
+<!--<button id="answerButton"><h3>Answer option 3<h3/></button>-->
+<!--<button id="answerButton"><h3>Answer option 4<h3/></button>-->
+<!--<br>-->
+<!--<br>-->
+<!--<div>-->
+<!--<button id="nextButton">-->
+<!--    <h2>Next</h2>-->
+<!--</button>-->
+<!--</div>-->
 </body>
 </html>
