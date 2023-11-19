@@ -73,9 +73,11 @@ h2 {
 }
 
 footer {
-  position: sticky;
-    color: black;
-    margin-bottom: 10%;
-    padding: initial;
-
+    color: white;
+    font-size: xx-large;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
 }
+

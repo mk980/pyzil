@@ -8,33 +8,32 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'game/css/styles.css' %}">
     <script src="{% static 'game/js/scripts.js' %}"></script>
-    <script>src="{% static 'game/js/gamescreen.js'}"</script>
+    <script>src = "{% static 'game/js/gamescreen.js'}"</script>
 
-</head>
+        < /head>
 
-<body>
+    <body>
     <!-- Header -->
     <header>
         <nav>
             <a href="{% url 'index' %}"></a>
 
-       </nav>
+        </nav>
     </header>
 
     <!-- Body -->
     <main>
-    {% block content %}
-        <div>{% include 'messages.html' %}</div>
-    {% endblock %}
+        {% block content %}
+            <div>{% include 'messages.html' %}</div>
+        {% endblock %}
 
 
     </main>
 
-    <!-- Footer -->
     <footer>
-        <div> <u> © Pyzillionaire 2023 </u></div>
+        <div><u> © Pyzillionaire 2023 </u></div>
     </footer>
 
-  </body>
+    </body>
 
-</html>
+    </html>
