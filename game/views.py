@@ -7,8 +7,10 @@ from .models import AnswersSet, TriviaQuestion
 # Configure logging settings
 logging.basicConfig(level=logging.DEBUG)
 
+
 def index(request):
     return render(request, 'game/index.html')
+
 
 def game_view(request):
     logging.debug("Entered game_view function")
@@ -72,6 +74,7 @@ def game_view(request):
 
     question = TriviaQuestion.objects.order_by('?').first()
     return render(request, 'game/game_screen.html', {'question': question})
+
 
 def handle_next_question(request):
     question_counter = request.session.get('question_counter', 0)
