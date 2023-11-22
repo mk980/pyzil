@@ -4,7 +4,6 @@ from .utils import fetch_question
 from django.contrib import messages
 from .models import AnswersSet, TriviaQuestion
 
-# Configure logging settings
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -18,7 +17,6 @@ def game_view(request):
     if request.method == 'POST':
         logging.debug("Received POST request")
 
-        # Handle answer submission
         question = request.POST.get('question')
         user_answer = request.POST.get('option')
         correct_answer = request.POST.get('answer_label')
@@ -30,13 +28,12 @@ def game_view(request):
             attempts = request.session.get('attempts', 0)
             request.session['attempts'] = attempts + 1
 
-            if attempts >= 2:  # User has no further attempts left
+            if attempts >= 2:
                 messages.warning(request, f'Wrong answer, Correct Answer is {correct_answer}')
                 return handle_next_question(request)
 
             messages.warning(request, f'Wrong answer, try again. Attempts remaining: {2 - attempts}')
 
-    # Fetch a new question if no answer was submitted or the answer was incorrect
     response = fetch_question()
     if response.status_code == 200:
         data = response.json()
@@ -44,7 +41,6 @@ def game_view(request):
 
         if results:
             for result in results:
-                # Save the question and its answers
                 incorrect_answers = result.get("incorrect_answers")
                 answers_set = AnswersSet(
                     correct_answer=result.get("correct_answer"),
@@ -80,9 +76,9 @@ def handle_next_question(request):
     question_counter = request.session.get('question_counter', 0)
     request.session['question_counter'] = question_counter + 1
 
-    request.session['attempts'] = 0  # Reset attempts for the new question
+    request.session['attempts'] = 0
 
-    if question_counter >= 9:  # Max questions for the game (starting from 0)
+    if question_counter >= 9:
         return render(request, 'game/game_finished.html')
 
     return redirect('game_view')
