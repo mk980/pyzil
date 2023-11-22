@@ -59,7 +59,6 @@ def game_view(request):
                 )
                 question.save()
 
-    # Display the next question
     question_counter = request.session.get('question_counter', 0)
     attempts = request.session.get('attempts', 0)
     current_question_id = request.session.get('current_question')
