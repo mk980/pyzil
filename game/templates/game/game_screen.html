@@ -7,29 +7,29 @@
 <body>
 <form id="answerForm" method="post" action="{% url 'game_view' %}">
     {% csrf_token %}
-    <input type="hidden" name="question" value="{{ question }}">
-    <input type="hidden" name="answer_label" value="{{ question.answer_set.correct_answer }}">
+    <input type="hidden" name="question" value="{{ question|safe  }}">
+    <input type="hidden" name="answer_label" value="{{ question.answer_set.correct_answer|safe  }}">
     <div class="question-container">
-        <p><h2>Q. {{ question.question }}</h2></p>
+        <p><h2>Q. {{ question.question|safe  }}</h2></p>
         <div class="answer-options">
             <div class="form-check">
                 <input class="form-check-input" type="radio" id="option_one" name="option" value="{{ question.answer_set.correct_answer }}">
-                <label for="option_one">{{ question.answer_set.correct_answer }}</label>
+                <label for="option_one">{{ question.answer_set.correct_answer|safe  }}</label>
             </div>
 
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="option_two" name="option" value="{{ question.answer_set.incorrect_answer1 }}">
-                <label for="option_two">{{ question.answer_set.incorrect_answer1 }}</label>
+                <input class="form-check-input" type="radio" id="option_two" name="option" value="{{ question.answer_set.incorrect_answer1|safe  }}">
+                <label for="option_two">{{ question.answer_set.incorrect_answer1|safe  }}</label>
             </div>
 
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="option_three" name="option" value="{{ question.answer_set.incorrect_answer2 }}">
-                <label for="option_three">{{ question.answer_set.incorrect_answer2 }}</label>
+                <input class="form-check-input" type="radio" id="option_three" name="option" value="{{ question.answer_set.incorrect_answer2|safe  }}">
+                <label for="option_three">{{ question.answer_set.incorrect_answer2|safe  }}</label>
             </div>
 
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="option_four" name="option" value="{{ question.answer_set.incorrect_answer3 }}">
-                <label for="option_four">{{ question.answer_set.incorrect_answer3 }}</label>
+                <input class="form-check-input" type="radio" id="option_four" name="option" value="{{ question.answer_set.incorrect_answer3|safe  }}">
+                <label for="option_four">{{ question.answer_set.incorrect_answer3|safe  }}</label>
             </div>
         </div>
     </div>

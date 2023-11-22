@@ -4,12 +4,12 @@ from .models import Game, AnswersSet, TriviaQuestion
 
 
 def fetch_question():
-	try:
-		response = requests.get('https://opentdb.com/api.php?amount=10&type=multiple')
-		return response
-	except Exception as e:
-		print(f"Error fetching questions: {e}")
-		return None
+    try:
+        response = requests.get('https://opentdb.com/api.php?amount=10&type=multiple')
+        return response  # Return the response object directly
+    except Exception as e:
+        print(f"Error fetching questions: {e}")
+        return None
 
 
 def save_game_data(game_data, difficulty_level):
