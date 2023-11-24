@@ -27,6 +27,14 @@ def game_view(request):
     log_items = {key: value for key, value in request.session.items() if key != 'asked_questions'}
     logging.debug(log_items)
 
+    if not request.session:
+        request.session.clear()
+        request.session.modified = True
+        # Reset relevant session variables to their initial values
+        request.session['question_counter'] = 0
+        request.session['attempts'] = 0
+        request.session['initialized'] = True
+
     current_question_id = request.session.get('current_question')
 
     if request.method == 'POST':
