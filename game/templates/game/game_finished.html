@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>TRIVIA GAME</title>
-</head>
-<body>
-<h2>Thank you Game is finished</h2>
-</body>
-</html>
+{% extends 'game/_base.html' %}
+
+{% block content %}
+<body class="d-flex justify-content-center align-items-center vh-100 bg-dark text-white">
+
+<div class="text-center">
+    <h1><b>Thank you for playing!</b></h1> </div>
+    <br>
+    <div class="text-center"> </div>
+<form id="startGameForm" method="GET" action="{% url 'game_view' %}">
+    {% csrf_token %}
+    <div class="text-center">
+            <h1><b>Let's Play Again! </b></h1>
+            <button type="submit"><h2>Start the game!</h2></button>
+    <br>
+    </div>
+     <script>
+    $(document).ready(function () {
+
+        $('#startGameForm').submit(function (event) {
+            event.preventDefault();  // Prevent default form submission
+
+            // Use AJAX to submit the form and handle the response
+            $.ajax({
+            type: 'GET',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            success: function (data) {
+                console.log('Success:', data);
+                // Add additional logic if needed
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                alert('Failed to start the game');
+            },
+            complete: function () {
+                // Redirect after the request is complete
+                window.location.href = '/game_screen/';
+            }
+        });
+    });
+});
+</script>
+</form>
+
+{% endblock content %}
