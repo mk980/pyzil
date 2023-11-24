@@ -7,37 +7,29 @@ body {
     background-size: cover;
     text-align: center;
 
-    /* background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center center; */
 }
 
 h1 {
     margin-top: 10%;
     font-family: "Arial Black", sans-serif;
     font-weight: bold;
-    color: ghostwhite;
+    color: floralwhite;
 }
 
 h2 {
     font-family: "Arial Black", sans-serif;
     font-weight: bold;
-    /*color: ghostwhite;*/
+    margin-top: 10%;
+
 }
 #nextButton {
     display: none;
 }
 
-/*.page-container {*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  min-height: 100vh;*/
-/*    color: black;*/
-/*    text-align: center;*/
-/*}*/
+
 
 .question-container {
-  margin: auto;  /* Change "margin-top: 10%" to "margin: auto" for vertical centering */
+  margin: auto;
   width: 500px;
   background-color: #fff;
   border-radius: 8px;
@@ -66,9 +58,9 @@ h2 {
 
 .answer-options {
   display: flex;
-  flex-direction: column;  /* Change "flex-direction: column-reverse" to "flex-direction: column" */
+  flex-direction: column;
   margin-bottom: 20px;
-  align-items: flex-start;  /* Add "align-items: center" to center the answer options horizontally */
+  align-items: flex-start;
 }
 .answer-options input[type="button"] {
   margin-right: 500px;
@@ -113,4 +105,9 @@ footer {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+ul {
+  list-style-type: none;
+}
+
 

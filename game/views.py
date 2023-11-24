@@ -10,17 +10,24 @@ def index(request):
     return render(request, 'game/index.html')
 
 
+def calculate_progress_color(progress_ratio):
+    if progress_ratio < 25:
+        return 'bg-danger'
+    elif progress_ratio < 50:
+        return 'bg-warning'
+    elif progress_ratio < 75:
+        return 'bg-info'
+    else:
+        return 'bg-success'
+
+
 def game_view(request):
     logging.debug("Entered game_view function")
     logging.debug(request.session.items())
     log_items = {key: value for key, value in request.session.items() if key != 'asked_questions'}
     logging.debug(log_items)
 
-
-    # if request.method == 'POST':
-        # request.session['question_counter'] = 1
-    if 'new_session' in request.GET:
-        request.session.flush()
+    current_question_id = request.session.get('current_question')
 
     if request.method == 'POST':
         logging.debug("Received POST request")
@@ -45,14 +52,11 @@ def game_view(request):
             messages.warning(request, f'Wrong answer, try again. Attempts remaining: {(2 - attempts)}')
 
             request.session.get('current_question_id')
-            question, correct_answer, incorrect_answer1, incorrect_answer2, incorrect_answer3 = get_current_question(request) # noqa
-            return render(request,
-                          'game/game_screen.html',
-                          {'question': question,
-                           'correct_answer': correct_answer,
-                           'incorrect_answer1': incorrect_answer1,
-                           'incorrect_answer2': incorrect_answer2,
-                           'incorrect_answer3': incorrect_answer3})
+            question = get_current_question(request)
+
+            render(request,
+                   'game/game_screen.html',
+                   {'question': question, 'current_question_id': current_question_id})
 
     response = fetch_question()
     if response.status_code == 200:
@@ -78,17 +82,26 @@ def game_view(request):
                     answer_set=answers_set
                 )
                 question.save()
-
+                request.session['current_question'] = question.pk
     question_counter = request.session.get('question_counter', 0)
     attempts = request.session.get('attempts', 0)
+    total_questions = 10  # Total question in the game
+    progress_ratio = (request.session.get('question_counter', 0) / total_questions) * 100
+    progress_color = calculate_progress_color(progress_ratio)
     current_question_id = request.session.get('current_question')
 
     logging.debug(f"Question counter: {question_counter}")
     logging.debug(f"Attempts: {attempts}")
     logging.debug(f"Current question ID: {current_question_id}")
+    logging.debug(f"Progress ratio: {progress_ratio}")
 
     question = TriviaQuestion.objects.order_by('?').first()
-    return render(request, 'game/game_screen.html', {'question': question})
+    return render(request,
+                  'game/game_screen.html',
+                  {'question': question,
+                   'progress_ratio': progress_ratio,
+                   'progress_color': progress_color,
+                   'current_question_id': current_question_id})
 
 
 def handle_next_question(request):
@@ -101,35 +114,21 @@ def handle_next_question(request):
     request.session['attempts'] = 0
     if question_counter >= 10:
         return render(request, 'game/game_finished.html')
-
     return redirect('game_view')
 
 
 def get_current_question(request):
     current_question_id = request.session.get('current_question')
-    current_question = None
-    correct_answer = None
-    incorrect_answer1 = None
-    incorrect_answer2 = None
-    incorrect_answer3 = None
-    try:
-        current_question_object = TriviaQuestion.objects.get(pk=current_question_id)
-        current_question = current_question_object.question
-        correct_answer = current_question_object.answer_set.correct_answer
-        incorrect_answer1 = current_question_object.answer_set.incorrect_answer1
-        incorrect_answer2 = current_question_object.answer_set.incorrect_answer2
-        incorrect_answer3 = current_question_object.answer_set.incorrect_answer3
 
+    try:
+        current_question = TriviaQuestion.objects.get(pk=current_question_id)
     except TriviaQuestion.DoesNotExist:
         current_question = None
-
-    return current_question, correct_answer, incorrect_answer1, incorrect_answer2, incorrect_answer3
+    return current_question
 
 
 def get_next_question(request):
-
     request.session.setdefault('asked_questions', [])
-
     asked_question_ids = request.session['asked_questions']
     next_question = TriviaQuestion.objects.order_by('?').exclude(
         pk__in=asked_question_ids
@@ -141,5 +140,4 @@ def get_next_question(request):
         request.session['asked_questions'].append(next_question_id)
     else:
         next_question_id = None
-
     return next_question_id
