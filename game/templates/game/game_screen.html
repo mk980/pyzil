@@ -12,7 +12,7 @@
 <div class="progress-bar progress-bar-striped" role="progressbar" aria-label="Default striped example"
 style="width: {{ progress_ratio }}%" aria-valuenow="{{ progress_ratio }}" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
-    <input type="hidden" name="game_id" value="{{ game.pk|safe  }}">
+    <input type="hidden" name="game_id" value="{{ game_id|safe }}">
     <input type="hidden" name="question" value="{{ question|safe  }}">
     <input type="hidden" name="current_question" value="{{question.pk|safe }}">
     <div class="question-container">
