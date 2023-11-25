@@ -1,37 +1,25 @@
-from django.shortcuts import redirect, render
+import logging
+from django.shortcuts import render
 from .utils import fetch_question
-from django.contrib import messages
-from .models import AnswersSet, TriviaQuestion
+from .models import AnswersSet, TriviaQuestion, GameSession
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 def index(request):
     return render(request, 'game/index.html')
 
 
-def game_view(request):
-    if request.method == 'POST':
-        # Handle answer submission
-        question_id = request.POST.get('question')
-        user_answer = request.POST.get('option')
-        correct_answer = request.POST.get('answer_label')
-
-        if user_answer == correct_answer:
-            messages.success(request, 'Correct answer')
-            handle_correct_answer(request, question_id)
-        else:
-            handle_incorrect_answer(request, correct_answer)
-
-    question = get_current_question(request)
-
+def new_game_start(request):
     response = fetch_question()
     if response.status_code == 200:
         data = response.json()
-        results = data.get("results", {"results": "No results"})
-
+        results = data.get("results", [])
+        new_game = GameSession()
+        new_game.save()
         if results:
             for result in results:
                 incorrect_answers = result.get("incorrect_answers")
-                # AnswerSet instance for Associated TriviaQuestion
                 answers_set = AnswersSet(
                     correct_answer=result.get("correct_answer"),
                     incorrect_answer1=incorrect_answers[0],
@@ -39,84 +27,73 @@ def game_view(request):
                     incorrect_answer3=incorrect_answers[2]
                 )
                 answers_set.save()
-                # TriviaQuestion instance
+
                 question = TriviaQuestion(
                     category=result.get("category"),
                     difficulty=result.get("difficulty"),
                     question=result.get("question"),
                     type=result.get("type"),
-                    answer_set=answers_set
+                    answer_set=answers_set,
 
                 )
                 question.save()
-    question = TriviaQuestion.objects.order_by('?').first()
-    return render(request, 'game/game_screen.html', {'question': question})
+                new_game.game_questions.add(question)
+                new_game.save()
+        question = new_game.game_questions.first()
+        return render(request,
+                      'game/game_screen.html',
+                      {'question': question,
+                       "game_id": new_game.pk,
+                       'current_question_id': question.pk})
 
 
-def handle_correct_answer(request, question_id):
-    # Increment the session's question counter
-    question_counter = request.session.get('question_counter', 0)
-    request.session['question_counter'] = question_counter + 1
+def game_view(request):
+    logging.debug("Entered game_view function")
+    logging.debug(request.session.items())
+    log_items = {key: value for key, value in request.session.items() if key != 'asked_questions'}
+    logging.debug(log_items)
 
-    if question_counter >= 10:  # Max questions for the game
-        # Game finished, redirect to a completion page or take other actions
-        return render(request, 'game/game_finished.html')
+    if request.method == "GET":
+        return new_game_start(request)
 
-    # Move to the next question
-    next_question_id = get_next_question(request)
+    if request.method == 'POST':
+        logging.debug("Received POST request")
+        current_question_id = request.session.get('current_question')
+        user_answer = request.POST.get('option')
+        question = get_current_question(request)
+        question.user_answer = user_answer
+        question.is_answered = True
+        question.save()
 
-    if next_question_id is not None:
-        # Set the current question in the session
-        request.session['current_question'] = next_question_id
-        # Reset attempts for the new question
-        request.session['attempts'] = 0
+        next_question = get_next_question(request)
+        if next_question == None:
+            score = 0
+            game = GameSession.objects.get(pk=request.POST.get("game_id"))
+            for question in game.game_questions.all():
+                if question.user_answer == question.answer_set.correct_answer:
+                    score += 1
 
-    # Check if the user has attempted the current question
-    if request.session.get('attempts', 0) >= 2:
-        # User has no further attempts left
-        correct_answer = TriviaQuestion.objects.get(pk=question_id).answer_set.correct_answer
-        messages.warning(request, f'Wrong answer, Correct Answer is {correct_answer}')
-
-    # Redirect to the game view to display the current question again or the next question
-    return redirect('game_view')
-
-
-def handle_incorrect_answer(request, correct_answer):
-    attempts = request.session.get('attempts', 0)
-    attempts += 1
-    request.session['attempts'] = attempts
-
-    if attempts >= 2:  # User has no further attempts left
-        messages.warning(request, f'Wrong answer, Correct Answer is {correct_answer}')
-
-    messages.warning(request, f'Wrong answer, try again. Attempts remaining: {2 - attempts}')
-
-    # Redirect to the game view to display the current question again
-    return redirect('game_view')
+            return render(request, "game/game_finished.html",
+                          {'score': score, "questioncount": game.game_questions.count()})
+        else:
+            return render(request,
+                          'game/game_screen.html',
+                          {'question': next_question, 'current_question_id': current_question_id,
+                           "game_id": request.POST.get("game_id")})
 
 
 def get_current_question(request):
-    current_question_id = request.session.get('current_question')
-    try:
-        current_question = TriviaQuestion.objects.get(pk=current_question_id)
-    except TriviaQuestion.DoesNotExist:
-        current_question = None
-
-    return current_question
+    current_question_id = request.POST.get("current_question")
+    print(current_question_id)
+    return TriviaQuestion.objects.get(pk=current_question_id)
 
 
 def get_next_question(request):
-    # Try to get the next question
-    asked_question_ids = request.session.get('asked_questions', [])
-    next_question = TriviaQuestion.objects.order_by('?').exclude(
-        pk__in=asked_question_ids
-    ).first()
+    current_game = GameSession.objects.get(pk=request.POST.get("game_id"))
+    unanswered_questions = current_game.game_questions.filter(is_answered=False)
+    if unanswered_questions.count() > 0:
+        return unanswered_questions.first()
 
-    if next_question:
-        next_question_id = next_question.pk
-        # Append the ID of the next question to the asked_questions session variable
-        request.session.setdefault('asked_questions', []).append(next_question_id)
-    else:
-        next_question_id = None
 
-    return next_question_id
+
+
