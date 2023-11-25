@@ -2,6 +2,7 @@ import logging
 from django.shortcuts import render
 from .utils import fetch_question
 from .models import AnswersSet, TriviaQuestion, GameSession
+from django.contrib import messages
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -64,6 +65,11 @@ def game_view(request):
         question.user_answer = user_answer
         question.is_answered = True
         question.save()
+
+        if user_answer == question.answer_set.correct_answer:
+            messages.success(request, 'Your answer was correct!')
+        else:
+            messages.warning(request, 'Your answer was incorrect.')
 
         next_question = get_next_question(request)
         if next_question == None:
