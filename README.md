@@ -3,6 +3,8 @@
 This project is a Quiz Game that leverages the Trivia API to fetch and present a variety of questions to users. Players 
 can test their knowledge across different categories, difficulty levels, and question types. The game keeps track of scores and provides feedback on correct or incorrect answers.
 
+![img.png](img.png)
+
 ### Features
 
 - Categories: The game contains questions from variable categories.
@@ -58,4 +60,3 @@ Installation:
 #### Team 2 SDA PythonRemoteEE18  2023
 #### Trauma dream
 
-![img.png](img.png)
