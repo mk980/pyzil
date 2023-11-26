@@ -13,6 +13,8 @@ can test their knowledge across different categories, difficulty levels, and que
 - Score Tracking: Keep track of your score as you progress through the game.
 - Random Questions: Enjoy a diverse set of questions for an enhanced gaming experience.
 
+![img_1.png](img_1.png)
+
 ## Technology
 
 ### Framework
