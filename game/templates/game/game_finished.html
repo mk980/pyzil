@@ -1,20 +1,18 @@
 {% extends 'game/_base.html' %}
 
 {% block content %}
-<body class="d-flex justify-content-center align-items-center vh-100 bg-dark text-white">
+<body>
 
-<div class="text-center">
-    <h1><b>Thank you for playing!</b></h1>
-    <br>
-    <h2> Your score is: {{ score }}/{{ questioncount }} </h2></div>
-    <br>
-    <div class="text-center"> </div>
+<div>
+    <h1>Thank you for playing!</h1>
+    <h2> You scored: {{ score }}/{{ questioncount }} </h2>
+</div>
+    <div> </div>
 <form id="startGameForm" method="GET" action="{% url 'game_view' %}">
     {% csrf_token %}
-    <div class="text-center">
-            <h1><b>Let's Play Again! </b></h1>
-            <button type="submit"><h2>Start the game!</h2></button>
-    <br>
+    <div>
+{#            <h2>Let's Play Again! </h2>#}
+            <button class="btn" type="submit">Start new game!</button>
     </div>
      <script>
     $(document).ready(function () {

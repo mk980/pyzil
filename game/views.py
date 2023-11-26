@@ -69,7 +69,7 @@ def game_view(request):
         if user_answer == question.answer_set.correct_answer:
             messages.success(request, 'Your answer was correct!')
         else:
-            messages.warning(request, 'Your answer was incorrect.')
+            messages.warning(request, 'Your answer was wrong!')
 
         next_question = get_next_question(request)
         if next_question == None:
