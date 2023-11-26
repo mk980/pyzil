@@ -9,12 +9,13 @@
 <body class="d-flex justify-content-center align-items-center vh-100 bg-dark text-white">
 <form id="startGameForm" method="GET" action="{% url 'game_view' %}">
     {% csrf_token %}
-    <div class="text-center">
-            <h1><b>Who Wants To Be a Pyzillionaire?</b></h1>
-            <button type="submit"><h2>Start the game!</h2></button>
-    <br>
+    <div>
+            <h1>Who Wants To Be a Pyzillionaire?</h1>
     </div>
-     <script>
+    <div>
+        <button class="btn" type="submit">Start the game!</button>
+    </div>
+        <script>
     $(document).ready(function () {
 
         $('#startGameForm').submit(function (event) {
