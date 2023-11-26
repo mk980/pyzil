@@ -11,17 +11,6 @@ can test their knowledge across different categories, difficulty levels, and que
 - Score Tracking: Keep track of your score as you progress through the game.
 - Random Questions: Enjoy a diverse set of questions for an enhanced gaming experience.
 
-
-# Codnity Django projects template
-
-The project serves purpose of providing a starting boilerplate for developing an API service from scratch
-utilising Django Rest Framework as well as service with HTML templates.
-
-These templates represent the following apps:
-
-- `api` app represents the template for API service
-- `cars` app represents the template for HTML based web-page
-
 ## Technology
 
 ### Framework
