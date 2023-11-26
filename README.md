@@ -20,8 +20,6 @@ The current version of the template is based on:
 - Python 3.11.*
 - Django 4.6.*
 
-In case of new versions, you are free to update them.
-
 ### Database: PostgreSQL 4.16
 
 - Currently, there are applied settings for Postgres server which is defined `settings.py`.
