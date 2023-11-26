@@ -57,3 +57,5 @@ Installation:
 
 #### Team 2 SDA PythonRemoteEE18  2023
 #### Trauma dream
+
+![img.png](img.png)
